@@ -1,0 +1,18 @@
+{
+  "motif": "0.1",
+  "meta": {
+    "title": "Square spins into a circle",
+    "description": "A square is drawn, rotates 90 degrees, then its corners round off until it becomes a circle while the colour changes from green to blue.",
+    "tags": ["shapes", "rotation", "morph", "rect"]
+  },
+  "objects": [
+    {"id": "sq", "type": "rect", "w": 3, "h": 3, "stroke": "#83c167", "fill": "#83c167", "stroke_width": 0.06}
+  ],
+  "timeline": [
+    {"action": "create", "target": "sq", "duration": 1.2},
+    {"action": "transform", "target": "sq", "to": {"rotation": 90}, "duration": 1},
+    {"action": "transform", "target": "sq", "to": {"corner": 1.5, "fill": "#58c4dd", "stroke": "#58c4dd"}, "duration": 1.2},
+    {"action": "highlight", "target": "sq"},
+    {"action": "fade_out", "target": "sq", "duration": 0.8}
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "motif": "0.1",
+  "meta": {
+    "title": "Bars growing",
+    "description": "Three bars grow up from a baseline one after another, like an animated bar chart, then the tallest one is highlighted.",
+    "tags": ["data", "chart", "bars", "rect"]
+  },
+  "objects": [
+    {"id": "base", "type": "line", "start": [-5, -3], "end": [5, -3], "stroke": "#888888"},
+    {"id": "b1", "type": "rect", "x": -3, "y": -2.5, "w": 1.6, "h": 1, "fill": "#58c4dd", "stroke": "#58c4dd"},
+    {"id": "b2", "type": "rect", "x": 0, "y": -2.5, "w": 1.6, "h": 1, "fill": "#83c167", "stroke": "#83c167"},
+    {"id": "b3", "type": "rect", "x": 3, "y": -2.5, "w": 1.6, "h": 1, "fill": "#fc6255", "stroke": "#fc6255"},
+    {"id": "title", "type": "text", "text": "Growth", "y": 3.5, "size": 0.6, "weight": "bold"}
+  ],
+  "timeline": [
+    {"action": "create", "target": "base", "duration": 0.6},
+    {"action": "fade_in", "target": "title", "with_previous": true},
+    {"action": "fade_in", "target": "b1", "duration": 0.3},
+    {"action": "transform", "target": "b1", "to": {"h": 3, "y": -1.5}, "duration": 0.8},
+    {"action": "fade_in", "target": "b2", "duration": 0.3},
+    {"action": "transform", "target": "b2", "to": {"h": 4.5, "y": -0.75}, "duration": 0.8},
+    {"action": "fade_in", "target": "b3", "duration": 0.3},
+    {"action": "transform", "target": "b3", "to": {"h": 6, "y": 0}, "duration": 0.8},
+    {"action": "highlight", "target": "b3", "factor": 1.08},
+    {"action": "wait", "duration": 1}
+  ]
+}

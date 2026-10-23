@@ -1,0 +1,22 @@
+{
+  "motif": "0.1",
+  "meta": {
+    "title": "Sine becomes cosine",
+    "description": "Axes are drawn, the graph of sin(x) traces on, then it morphs into cos(x) and the title text changes to match.",
+    "tags": ["maths", "graph", "trigonometry", "morph"]
+  },
+  "objects": [
+    {"id": "ax", "type": "axes", "y": -0.4, "width": 13, "height": 6, "x_range": [-6.5, 6.5], "y_range": [-1.5, 1.5], "y_step": 0.5},
+    {"id": "f", "type": "graph", "axes": "ax", "expr": "sin(x)", "stroke": "#fc6255"},
+    {"id": "title", "type": "text", "text": "y = sin(x)", "y": 3.6, "size": 0.6, "font": "mono"}
+  ],
+  "timeline": [
+    {"action": "create", "target": "ax", "duration": 1},
+    {"action": "fade_in", "target": "title", "with_previous": true},
+    {"action": "create", "target": "f", "duration": 1.5},
+    {"action": "wait", "duration": 0.5},
+    {"action": "transform", "target": "f", "to": {"expr": "cos(x)", "stroke": "#83c167"}, "duration": 1.5},
+    {"action": "transform", "target": "title", "to": {"text": "y = cos(x)", "fill": "#83c167"}, "with_previous": true, "duration": 1.5},
+    {"action": "wait", "duration": 1}
+  ]
+}

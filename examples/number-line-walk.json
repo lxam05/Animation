@@ -1,0 +1,25 @@
+{
+  "motif": "0.1",
+  "meta": {
+    "title": "Walking along a number line",
+    "description": "A dot on a number line moves from 0 to 3, then back to -2, showing addition and subtraction as movement.",
+    "tags": ["maths", "number-line", "dot", "move", "arithmetic"]
+  },
+  "objects": [
+    {"id": "nl", "type": "axes", "width": 12, "height": 0.01, "x_range": [-6, 6], "y_range": [-1, 1], "y_step": 5, "stroke": "#bbbbbb", "stroke_width": 0.04},
+    {"id": "p", "type": "dot", "r": 0.15, "fill": "#ffff00"},
+    {"id": "eq", "type": "text", "text": "0", "y": 2, "size": 0.8, "font": "mono"}
+  ],
+  "timeline": [
+    {"action": "create", "target": "nl"},
+    {"action": "fade_in", "target": "p"},
+    {"action": "fade_in", "target": "eq", "with_previous": true},
+    {"action": "transform", "target": "eq", "to": {"text": "0 + 3 = 3"}, "duration": 0},
+    {"action": "move", "target": "p", "to": [3, 0], "duration": 1.5},
+    {"action": "wait", "duration": 0.5},
+    {"action": "transform", "target": "eq", "to": {"text": "3 - 5 = -2"}, "duration": 0},
+    {"action": "move", "target": "p", "to": [-2, 0], "duration": 2},
+    {"action": "highlight", "target": "p", "factor": 1.6},
+    {"action": "wait", "duration": 1}
+  ]
+}

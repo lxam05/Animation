@@ -1,0 +1,28 @@
+[project]
+name = "motif"
+version = "0.1.0"
+description = "A motion-graphics language for AI models, backed by MongoDB Atlas"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "pydantic>=2.6",
+  "pymongo>=4.7",      # 4.7+ has create_search_index for Atlas Vector Search
+  "httpx>=0.27",
+  "anthropic>=0.40",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[project.scripts]
+motif = "motif.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["motif"]
+
+[tool.setuptools.package-data]
+motif = ["player.js"]

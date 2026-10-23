@@ -1,0 +1,19 @@
+{
+  "motif": "0.1",
+  "meta": {
+    "title": "Hello, circle",
+    "description": "A circle is drawn in the centre, grows and turns yellow, then a label fades in underneath it.",
+    "tags": ["basics", "shapes", "text"]
+  },
+  "objects": [
+    {"id": "c", "type": "circle", "r": 1.2, "stroke": "#58c4dd", "fill": "#58c4dd", "stroke_width": 0.06},
+    {"id": "label", "type": "text", "text": "Hello, Motif", "y": -2.6, "size": 0.6}
+  ],
+  "timeline": [
+    {"action": "create", "target": "c", "duration": 1.2},
+    {"action": "transform", "target": "c", "to": {"r": 1.8, "fill": "#ffff00", "stroke": "#ffff00"}, "duration": 1},
+    {"action": "fade_in", "target": "label"},
+    {"action": "highlight", "target": "c"},
+    {"action": "wait", "duration": 1}
+  ]
+}
