@@ -8,23 +8,25 @@ Liam's **personal learning project**. The goal is for Liam to **learn MongoDB an
 Atlas deeply**, not just to have working code. Treat every session as pair
 programming with a teacher's hat on.
 
-## Working agreement (non-negotiable)
+## Working agreement (updated session 2: Liam is brand new to MongoDB)
 
-1. **Never create Atlas accounts, projects, clusters, users, or API keys.** Liam
-   has an Atlas account and does all Atlas-side actions himself. You explain what
-   to click or run and why.
-2. **Explain before you implement anything MongoDB-related.** For any new
-   collection, field, index, query, pipeline, or Atlas feature, first explain:
-   what it is, why we'd use it, the alternatives, and the trade-off. Then wait
-   for Liam's go-ahead or his changes.
-3. **Liam makes the data-model decisions.** Propose options; don't silently pick one.
-4. **Prefer Liam writing MongoDB code**, with you reviewing, hinting, and
-   explaining errors, unless he asks you to write it.
-5. **Never run commands that write to or delete from his Atlas cluster** without
-   explicit approval for that specific command.
-6. Keep `docs/02-atlas-and-mongodb.md` up to date. It is Liam's study guide.
-   Every MongoDB concept the project uses should be explained there.
-7. Never commit secrets. `.env` is git-ignored; `.env.example` holds placeholders.
+1. **Claude makes the technical and data-model decisions**, and always explains
+   them in plain, beginner-friendly language: what it is, why this choice, what
+   the alternative was. Assume no prior database knowledge. Record decisions in
+   `docs/00-mongodb-from-zero.md` §8.
+2. **Never create Atlas accounts, projects, clusters, users, or API keys.** Liam
+   has an account. Anything in the Atlas website is done by Liam, with clear
+   step-by-step instructions saying what each thing is.
+3. **Narrate as you go.** Before running or asking Liam to run a command that
+   touches his cluster, say in one or two sentences what it will do in MongoDB
+   terms and what he should expect to see (e.g. in Atlas Data Explorer).
+   Never write to or delete from his cluster without his OK for that step.
+4. Point Liam to where he can *see* each result (Data Explorer, Compass), so
+   he builds a mental picture, not just working code.
+5. Keep `docs/00-mongodb-from-zero.md` (beginner primer) and
+   `docs/02-atlas-and-mongodb.md` (deeper guide) up to date with every MongoDB
+   concept the project uses.
+6. Never commit secrets. `.env` is git-ignored; `.env.example` holds placeholders.
 
 ## What the project is
 
@@ -50,10 +52,18 @@ Docker Hub or Atlas):
   index, `$vectorSearch`, aggregation pipelines
 - `motif/embeddings.py`: Voyage AI embeddings via `https://ai.mongodb.com/v1`
 
-Liam paused before we touched Atlas so that he could review the MongoDB design
-and take part in it. **Next session: walk through `db.py` with him section by
-section (docs/02 is the guide), and let him decide what to keep, change, or
-rewrite himself before anything runs against his cluster.**
+Session 2: Liam asked Claude to make the decisions (recorded in docs/00 §8) and
+explain everything. Atlas setup is done and **`db.py`/`embeddings.py` now run
+for real**: `motif ping`, `atlas-setup`, `seed` (6 examples with 1024-dim
+embeddings) and `search` all work against Liam's M0 cluster.
+
+- Voyage free tier (no payment method) = **3 requests/minute**. `seed` now embeds
+  all scenes in one batched request; more than 3 quick searches in a row get a 429.
+- Run commands with `.venv/bin/motif` (no global `python` on this machine).
+- `search -k` defaults to 5.
+
+**Next step: `motif generate` (needs `ANTHROPIC_API_KEY`), then `motif stats`,
+showing Liam the `generations` documents in Data Explorer.**
 
 ## Conventions
 

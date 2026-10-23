@@ -156,8 +156,13 @@ def scene_stats(scene: Scene) -> dict:
 
 
 def save_scene(scene: Scene, *, is_example: bool, source: str, slug: str | None = None,
-               parent_id: Any = None, embed: bool = True) -> Any:
-    """Insert or update (by slug) a scene document. Returns its _id."""
+               parent_id: Any = None, embed: bool = True,
+               embedding: list[float] | None = None) -> Any:
+    """Insert or update (by slug) a scene document. Returns its _id.
+
+    Pass `embedding` if you already computed it (e.g. in one batched call for
+    many scenes); otherwise it is fetched here when `embed` is true.
+    """
     doc: dict[str, Any] = {
         "title": scene.meta.title,
         "description": scene.meta.description,
@@ -171,7 +176,9 @@ def save_scene(scene: Scene, *, is_example: bool, source: str, slug: str | None 
     }
     if parent_id is not None:
         doc["parent_id"] = parent_id  # lineage: "this scene was a variation of that one"
-    if embed:
+    if embedding is not None:
+        doc["embedding"] = embedding
+    elif embed:
         doc["embedding"] = embed_one(scene_text(scene), "document")
     scenes = get_db().scenes
     if slug:

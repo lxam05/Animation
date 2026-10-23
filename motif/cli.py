@@ -5,7 +5,10 @@ Works offline:
   motif render   examples/sine-to-cosine.json -o out/sine.html
   motif schema                      # print the JSON Schema
 
-Needs Atlas (MONGODB_URI) and embeddings (VOYAGE_API_KEY):
+Needs Atlas (MONGODB_URI):
+  motif ping                        # read-only connection check
+
+Needs Atlas and embeddings (VOYAGE_API_KEY):
   motif atlas-setup                 # collections, validators, indexes, vector index
   motif seed                        # load examples/ into Atlas with embeddings
   motif search "a wave changing shape"
@@ -76,6 +79,30 @@ def cmd_schema(a) -> int:
     return 0
 
 
+def cmd_ping(a) -> int:
+    """Read-only connection check: creates and changes nothing."""
+    from .config import settings
+    from . import db
+
+    host = settings.mongodb_uri.split("@")[-1].split("/")[0] if "@" in settings.mongodb_uri else "?"
+    print(f"connecting to {host} ...")
+    try:
+        db.ping()
+    except Exception as exc:  # show the beginner-relevant cause, not a wall of text
+        print(f"FAILED: {type(exc).__name__}: {str(exc)[:300]}")
+        print("hints: timeout -> check Network Access (your IP); "
+              "auth failed -> check username/password in .env; "
+              "unset -> copy .env.example to .env")
+        return 1
+    client = db.get_db().client
+    info = client.server_info()
+    print(f"connected! MongoDB server version {info['version']}")
+    print("databases on this cluster:", ", ".join(client.list_database_names()))
+    print(f"this project will use the database '{settings.db_name}' "
+          "(MongoDB creates it on the first write)")
+    return 0
+
+
 def cmd_setup(a) -> int:
     from . import db
 
@@ -88,17 +115,22 @@ def cmd_setup(a) -> int:
 
 def cmd_seed(a) -> int:
     from . import db
+    from .embeddings import embed, scene_text
 
-    n = 0
+    valid = []
     for path in sorted((ROOT / "examples").glob("*.json")):
         report = validate(path.read_text())
         if not report.ok:
             print(f"skip {path.name}: {report.errors[0]}")
             continue
-        _id = db.save_scene(report.scene, is_example=True, source="human", slug=path.stem)
-        print(f"seeded {path.stem} -> {_id}")
-        n += 1
-    print(f"{n} example scenes in Atlas")
+        valid.append((path.stem, report.scene))
+    # One embedding request for all scenes, not one per scene: fewer round trips,
+    # and it stays under the 3-requests-per-minute free-tier rate limit.
+    vectors = embed([scene_text(s) for _, s in valid], "document")
+    for (slug, scene), vector in zip(valid, vectors):
+        _id = db.save_scene(scene, is_example=True, source="human", slug=slug, embedding=vector)
+        print(f"seeded {slug} -> {_id}")
+    print(f"{len(valid)} example scenes in Atlas")
     return 0
 
 
@@ -160,6 +192,9 @@ def main(argv: list[str] | None = None) -> int:
 
     s = sub.add_parser("schema", help="print the JSON Schema of the format")
     s.set_defaults(fn=cmd_schema)
+
+    s = sub.add_parser("ping", help="check the connection to Atlas (read-only)")
+    s.set_defaults(fn=cmd_ping)
 
     s = sub.add_parser("atlas-setup", help="create collections and indexes in Atlas")
     s.set_defaults(fn=cmd_setup)
